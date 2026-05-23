@@ -2704,7 +2704,7 @@ int main( int argc, const char ** argv )
 	// ---------- Security: numeric character reference bounds ----------
 	{
 		// Regression: U+10FFFF is the last valid Unicode code point and must
-		// parse correctly. Fix #2 must not reject the maximum valid value.
+		// parse correctly. The in-loop overflow guard must not reject it.
 		XMLDocument doc;
 		doc.Parse( "<t v='&#x10FFFF;'/>" );
 		XMLTest( "Numeric ref U+10FFFF: no error", false, doc.Error() );
@@ -2717,7 +2717,7 @@ int main( int argc, const char ** argv )
 		XMLTest( "Numeric ref U+10FFFF: correct UTF-8 output", expected, v );
 	}
 	{
-		// Fix #2 boundary: U+110000 is one above the maximum code point.
+		// Boundary check: U+110000 is one above the maximum code point.
 		// The in-loop overflow guard must catch this before ucs is written,
 		// leaving the entity as a literal (starting with '&').
 		XMLDocument doc;
@@ -2728,7 +2728,7 @@ int main( int argc, const char ** argv )
 		         v != nullptr && v[0] == '&' );
 	}
 	{
-		// Fix #2: a hex entity with enough digits to overflow uint32_t must
+		// A hex entity with enough digits to overflow uint32_t must
 		// be rejected by the in-loop guard before the accumulator wraps.
 		// Before the fix, ucs could wrap around and pass the post-loop range
 		// check, producing an attacker-chosen character in the parsed output.
