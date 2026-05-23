@@ -2358,8 +2358,6 @@ static FILE* callfopen( const char* filepath, const char* mode )
 }
 
 void XMLDocument::DeleteNode( XMLNode* node )	{   
-    TIXMLASSERT( node );
-    TIXMLASSERT(node->_document == this );
     if(node == 0) {
         return; // check for null pointer
     }
