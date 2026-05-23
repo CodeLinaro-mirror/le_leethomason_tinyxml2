@@ -834,6 +834,9 @@ XMLNode::XMLNode( XMLDocument* doc ) :
 
 XMLNode::~XMLNode()
 {
+    // Fast path: this node is dying, so maintaining _firstChild/_lastChild and
+    // sibling _prev/_next links is unnecessary. Only _parent must be zeroed to
+    // satisfy the MarkInUse assertion inside DeleteNode.
     XMLNode *currentChild = _firstChild;
     while (currentChild != NULL) {
         XMLNode *next = currentChild->_next;
